@@ -109,14 +109,18 @@ def investigadoresdelete():
 
 @app.route('/actores')
 def actores():
-    conn = pymysql.connect(**conf)
-    cursor=conn.cursor()
-    cursor.execute("select * from vista_actorentida")
-    rows=cursor.fetchall()
-    resp=jsonify(rows)
-    cursor.close()
-    conn.close()
-    return resp
+    try:
+        conn = pymysql.connect(**conf)
+        cursor=conn.cursor()
+        cursor.execute("select * from vista_actorentida")
+        rows=cursor.fetchall()
+        resp=jsonify(rows)
+        cursor.close()
+        return resp
+        conn.close()
+        print("connection closed successfully")
+    except pymysql.Error as e:
+        print("could not close connection error pymysql %d: %s" %(e.args[0], e.args[1]))
 
 @app.route('/oficina')
 def oficina():
