@@ -107,7 +107,7 @@ def investigadoresdelete():
     return idcliente
 
 
-@app.route('/actore')
+@app.route('/actores')
 def actores():
     try:
         conn = pymysql.connect(**conf)
