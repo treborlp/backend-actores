@@ -24,29 +24,6 @@ conf =  {
 def index():
     return render_template('index.html')
 
-#Login POST
-@app.route('/inicipyarsesion',methods=['POST'])
-def iniciarSesion():
-    usuario=request.form["usuario"]
-    clave=request.form["clave"]
-    conn = pymysql.connect(**conf)
-    cursor=conn.cursor()
-    cursor.execute("select * from investigadores where usuario= %s", (usuario))
-
-    rows = cursor.fetchall()
-    if len(rows) == 1:
-        for i in rows:
-            if i.get('clave')==clave:
-                respuesta = jsonify(rows)
-            else:
-                respuesta="-2"
-    else:
-        respuesta="-1"
-    
-    cursor.close()
-    conn.close()
-    return respuesta
-
 @app.route('/actoresinsert',methods=['POST'])
 def actoresinsert():
     #idcategoria  diferente form["idcategoria"]
