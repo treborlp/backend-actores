@@ -1,5 +1,5 @@
 import pymysql
-from dotenv import load_dotenv
+from dotenv import load_dotenv  # variables de entorno 
 import os
 from flask import Flask, jsonify, request,render_template
 from flask_cors import CORS
@@ -107,7 +107,7 @@ def investigadoresdelete():
     return idcliente
 
 
-@app.route('/actores')
+@app.route('/actore')
 def actores():
     try:
         conn = pymysql.connect(**conf)
