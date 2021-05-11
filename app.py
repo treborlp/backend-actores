@@ -47,6 +47,8 @@ def iniciarSesion():
     conn.close()
     return respuesta
 
+#----------------------------------------------------------------------------------
+# Para Insert, update y delete TABLA ACTORES
 @app.route('/actoresinsert',methods=['POST'])
 def actoresinsert():
     #idcategoria  diferente form["idcategoria"]
@@ -71,29 +73,84 @@ def actoresinsert():
 
 #Guardar POST
 @app.route('/actoresupdate',methods=['POST'])
-def investigadoresupdate():
+def actoresupdate():
     #Leyendo variables de formulario q recibe el servicio
-    idcliente=request.form["idcliente"]
-    usuario=request.form["usuario"]
-    nombres=request.form["nombres"]
-    correo=request.form["correo"]
-    orcid=request.form["orcid"]
-    ctivitae=request.form["ctivitae"]
-    cargo=request.form["cargo"]
-    direccion=request.form["direccion"]
-    ciudad=request.form["ciudad"]
-    region=request.form["region"]
-    pais=request.form["pais"]
-    telefono=request.form["telefono"]
-
-
+    idActorEnt=request.form["idActorEnts"]  
+    ActorEnt_Nom=request.form["ActorEnt_Noms"]
+    idTipoActor=request.form["idTipoActors"]
+    idActOperativa=request.form["idActOperativas"]
+    idDistrito=request.form["idDistritos"]
+    idCPoblado=request.form["idCPoblados"]
     conn = pymysql.connect(**conf)
     cursor=conn.cursor()
-    cursor.execute("update investigadores set usuario= %s,nombres= %s,correo= %s,orcid= %s,ctivitae= %s,cargo= %s,direccion= %s,ciudad= %s,region= %s,pais = %s,telefono= %s where idcliente = %s", (usuario,nombres,correo,orcid,ctivitae,cargo,direccion,ciudad,region,pais,telefono,idcliente))
+    cursor.execute("update actorentidad set ActorEntidad_Nom= %s,TipoActor_idTipoActor= %s,ActOperativa_idActOperativa= %s,Distrito_idDistrito= %s,CPoblado_idCPoblado= %s where idActorEntidad = %s", (ActorEnt_Nom,idTipoActor,idActOperativa,idDistrito,idCPoblado,idActorEnt))
     cursor.close()
     conn.close()
-    return idcliente
+    return idActorEnt
 
+#Eliminar actores
+@app.route('/actordelete',methods=['POST'])
+def actordelete():
+    #Leyendo variables de formulario q recibe el servicio
+    idActorEntidad=request.form["idActorEntidad"]
+    conn = pymysql.connect(**conf)
+    cursor=conn.cursor()
+    cursor.execute("delete from actorentidad where idActorEntidad = %s", (idActorEntidad))
+    cursor.close()
+    conn.close()
+    return idActorEntidad
+
+
+#----------------------------------------------------------------------------------
+## Para Insert, update y delete TABLA ENTREGA
+@app.route('/formatoinsert',methods=['POST'])
+def formatoinsert():
+    #idcategoria  diferente form["idcategoria"]
+    #Leyendo variables de formulario q recibe el servicio
+    unidadMeds=request.form["unidadMeds"]
+    fechaEntregas=request.form["fechaEntregas"]
+    estraComs=request.form["estraComs"]
+    entregaVias=request.form["entregaVias"]
+    conn = pymysql.connect(**conf)    
+    cursor = conn.cursor() 
+    cursor.execute("Insert into entrega(`Entrega_UM`, `Entrega_Fech`, `Entrega_EstraCom`, `Entrega_Via`) values(%s,%s,%s,%s)", (unidadMeds,fechaEntregas,estraComs,entregaVias))
+    idEntrega = cursor.lastrowid
+    cursor.close()
+    conn.close()
+    if idEntrega:
+        return jsonify(idEntrega)
+    else: 
+        return jsonify(0)
+
+#UPDATE 
+@app.route('/formatoupdate',methods=['POST'])
+def formatoupdate():
+    #Leyendo variables de formulario q recibe el servicio
+    idEntrega=request.form["idEntregas"]  
+    Entrega_UM=request.form["Entrega_UMs"]
+    Entrega_Fech=request.form["Entrega_Fechs"]
+    Entrega_EstraCom=request.form["Entrega_EstraComs"]
+    Entrega_Via=request.form["Entrega_Vias"]
+    conn = pymysql.connect(**conf)
+    cursor=conn.cursor()
+    cursor.execute("update entrega set Entrega_UM= %s,Entrega_Fech= %s,Entrega_EstraCom= %s,Entrega_Via= %s where idEntrega = %s", (Entrega_UM,Entrega_Fech,Entrega_EstraCom,Entrega_Via,idEntrega))
+    cursor.close()
+    conn.close()
+    return idEntrega
+
+#DELETE
+@app.route('/formatodelete',methods=['POST'])
+def formatodelete():
+    #Leyendo variables de formulario q recibe el servicio
+    idEntre=request.form["idEntregas"]
+    conn = pymysql.connect(**conf)
+    cursor=conn.cursor()
+    cursor.execute("delete from entrega where idEntrega = %s", (idEntre))
+    cursor.close()
+    conn.close()
+    return idEntre
+
+#----------------------------------------------------------------------------------
 #Eliminar POST
 @app.route('/investigadoresdelete',methods=['POST'])
 def investigadoresdelete():
@@ -105,7 +162,6 @@ def investigadoresdelete():
     cursor.close()
     conn.close()
     return idcliente
-
 
 @app.route('/actores')
 def actores():
@@ -213,17 +269,6 @@ def cpoblado(id):
     conn.close()
     return resp
 
-#Eliminar POST
-@app.route('/actordelete',methods=['POST'])
-def actordelete():
-    #Leyendo variables de formulario q recibe el servicio
-    idActorEntidad=request.form["idActorEntidad"]
-    conn = pymysql.connect(**conf)
-    cursor=conn.cursor()
-    cursor.execute("delete from actorentidad where idActorEntidad = %s", (idActorEntidad))
-    cursor.close()
-    conn.close()
-    return idActorEntidad
 
 
 if __name__ == "__main__":
